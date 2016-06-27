@@ -2,7 +2,7 @@
 title: "Getting Started with cpcRain"
 author: "James Doss-Gollin"
 date: "`r Sys.Date()`"
-output: github_document#rmarkdown::html_vignette
+output: rmarkdown::html_vignette # github_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -30,11 +30,13 @@ The Climate Prediction Center's [(CPC)](http://www.cpc.ncep.noaa.gov/) daily dat
 This data is available at CPC's ftp site (ftp://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_GLB/). However, there are a number of issues:
 
 Issues with obtaining data:
+
 * there are too many files (365/366 per year * 34 years, separate folder for each year)
 * file naming conventions have chnaged over time, one format prior to 2006 and couple of different formats afterwards
 * downloading multiple files simultaneously from the CPC ftp site does not seem to work properly.
 
 Issues with processing data:
+
 * file formats have changed over time, gzipped files prior to 2008 and binary files afterwards
 * files are in binary format and there no software/code readily available to process/plot the data
 
