@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Build a NCDF File from CPC Data\n#'\n#' This function builds a NCDF (.nc) file from CPC data for a single year.\n#' To do this it downloads raw data from the CPC ftp server, reads it to an array, and writes that array to\n#' a NCDF file.\n#' It will always build the file for all data for that particular year.\n#' @param year the year for which to download. Must be an integer.\n#' @param download_folder the folder in which to store the .nc file. Defaults to \\code{getwd()}.\n#' @param empty_raw if TRUE, will delete the raw data. Defaults to TRUE\n#' @param overwrite if TRUE, will proceed even if a `.nc` file for the specified year exists. If FALSE, will not run.\n#' @import data.table\n#' @import magrittr\n#' @export cpcYearToNCDF\n\ncpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, overwrite = F){\n\n  # check for valid year\n  if(!(year %in% 1976:year(Sys.Date()))) stop('invalid year')\n\n  # check download_folder validity\n  if(substr(download_folder, nchar(download_folder), nchar(download_folder)) != '/') download_folder <- paste0(download_folder, '/')\n  if(!dir.exists(download_folder)) stop('invalid download_folder specified')\n\n  # global values\n  param <- cpcGlobal()\n\n\n\n  # For each day of the year: (1) download raw file (2) read raw file (3) save to memory\n\n\n  # define name of nc variable\n  nc_filename <- paste0(download_folder, 'cpcRain_', year, '.nc')\n\n  if(!file.exists(nc_filename) | overwrite){\n    # first initialize array\n    lons <- param$cpcLonVec\n    lats <- param$cpcLatVec\n    times <- as.numeric(seq(ymd(paste(year, 1, 1)), ymd(paste(year, 12, 31)), 1))\n    array <- array(dim = c(length(lons), length(lats), length(times)),\n                   dimnames = list(lons, lats, times))\n    # [lat, lon, time]\n\n\n    # create temp folder for raw data\n    tmp_folder <- paste0(download_folder, 'temp_', year)\n    dir.create(tmp_folder)\n\n    # loop through to fill the 3D array\n    for(i in 1:length(times)){\n      date_i <- as_date(times[i])\n      cpcDownloadOneDay(date = date_i, overwrite = FALSE, download_folder = tmp_folder)\n      array[, , i] <- cpcReadRawOneDay(date = date_i, download_folder = tmp_folder)\n    }\n\n    # define dimensions of the data array for ncdf saving\n    nc_lats <- ncdim_def(\"lat\", \"degrees N\", lats)\n    nc_lons <- ncdim_def(\"lon\", \"degrees E\", lons)\n    nc_times <- ncdim_def(\"time\", \"days since 1970-01-01\", as.numeric(times), unlim = TRUE)\n\n    # define a variable for ncdf\n    precip_ncvar <- ncvar_def(\n      name = 'precip',\n      units = 'mm',\n      dim = list(nc_lons, nc_lats, nc_times),\n      missval = NA,\n      longname = 'daily gridded precipitation, in mm',\n      verbose = F,\n      compression = 5 # make the file smaller\n    )\n\n    # all days to download\n    times_ymd <- as_date(times)\n\n\n    # ----------------- write to NCDF File --------\n\n    # create file connection\n    nc <- nc_create(filename = nc_filename, vars = precip_ncvar)\n\n    # loop through, adding 2D slices, because time is an unlimited dimension\n    for( i in 1:length(times)) {\n\n      ncvar_put(nc,\n                varid = precip_ncvar,\n                vals = array[, , i],\n                start = c(1, 1, i),\n                count = c(-1, -1, 1)\n      )\n\n    }\n\n    # close file connection\n    nc_close(nc)\n\n    # delete the temp folder, if desired\n    if(empty_raw) unlink(tmp_folder, recursive = T, force = T)\n  }\n\n}\n",
+    "created" : 1467033428187.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "357131150",
+    "id" : "B4419D12",
+    "lastKnownWriteTime" : 1467050997,
+    "last_content_update" : 1467050997803,
+    "path" : "~/Documents/Projects/cpcRain/R/cpcYearToNCDF.R",
+    "project_path" : "R/cpcYearToNCDF.R",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
