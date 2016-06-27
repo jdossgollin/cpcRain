@@ -11,8 +11,7 @@ LazyData: true
 RoxygenNote: 5.0.1
 Imports: ncdf4,
     lubridate,
-    data.table,
-    abind
+    data.table
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
