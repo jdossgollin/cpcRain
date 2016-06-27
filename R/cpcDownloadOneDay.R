@@ -26,7 +26,7 @@ cpcDownloadOneDay <- function(date, download_folder = getwd(), overwrite = FALSE
   day <- day(date)
 
   # check year validity
-  if(!yr %in% 1976:year(Sys.Date())) stop('Year must be from 1976 to Present')
+  if(!yr %in% 1979:year(Sys.Date())) stop('Year must be from 1979 to Present')
 
   # check download_folder validity
   if(substr(download_folder, nchar(download_folder), nchar(download_folder)) != '/') download_folder <- paste0(download_folder, '/')

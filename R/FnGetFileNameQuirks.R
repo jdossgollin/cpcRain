@@ -8,6 +8,8 @@
 #' @author Gopi Goteti
 #' @author James Doss-Gollin
 cpcGetFileNameQuirks <- function(yr) {
+  
+  require(lubridate)
 
   if (yr %in% seq(1979, 2005)) {
 
@@ -24,7 +26,7 @@ cpcGetFileNameQuirks <- function(yr) {
     urlTag  <- "RT/"
     fileTag <- ".RT.gz"
 
-  } else if (yr %in% seq(2009, 2016)) {
+  } else if (yr %in% seq(2009, year(Sys.Date()))) {
 
     urlTag  <- "RT/"
     fileTag <- ".RT"

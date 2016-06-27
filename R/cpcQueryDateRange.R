@@ -23,8 +23,8 @@ cpcQueryDateRange <- function(start_date, end_date, tidy = TRUE){
 
   if(!lubridate::is.Date(start_date) | !lubridate::is.Date(end_date))
     stop('date must be a R date object.See lubridate package for an easy way to accomplish this.')
-  if(!(year(start_date) %in% 1976:year(Sys.Date()) & year(end_date) %in% 1976:year(Sys.Date())))
-    stop('data range must be from 1976 to present')
+  if(!(year(start_date) %in% 1979:year(Sys.Date()) & year(end_date) %in% 1979:year(Sys.Date())))
+    stop('data range must be from 1979 to present')
 
   # global values
   param <- cpcGlobal()

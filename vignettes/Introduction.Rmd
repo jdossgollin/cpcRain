@@ -21,8 +21,8 @@ Many of the functions were written by Gopi Goteti in their first form and I have
 That package presented R code to download and analyze global precipitation data from the Climate Prediction Center (CPC)
 
 * Spatial Coverage: Global (mostly land areas)
-* Temporal Coverage: 1979/1/1 - present
-* Spatial Resolution: 0.5 degrees lat-lon (~ 50 x 50 km)
+* Temporal Coverage: 1979 - present
+* Spatial Resolution: 0.5 degrees lat-lon
 * Temporal Resolution: daily
 
 Hydrological and climatological studies sometimes require rainfall data over the entire world for long periods of time. 
