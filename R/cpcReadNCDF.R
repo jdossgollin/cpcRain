@@ -27,7 +27,7 @@ cpcReadNCDF <- function(start_date, end_date, lat_lims, lon_lims, download_folde
   # ---------- Checks on the Parameters ------
 
   # check the dates
-  if(!(is_date(start_date) & is_date(end_date))) stop('start_date and end_date must be date objects. see lubridate package for easy generation')
+  if(!(is.Date(start_date) & is.Date(end_date))) stop('start_date and end_date must be date objects. see lubridate package for easy generation')
 
   # check lims
   if(!(length(lat_lims == 2) & length(lon_lims == 2))) stop('lat_lims and lon_lims must be length 2')
@@ -90,7 +90,7 @@ cpcReadNCDF <- function(start_date, end_date, lat_lims, lon_lims, download_folde
     if(i == length(years_requested)){ #it's first year
       end_date_i <- end_date
     } else {
-      end_date_i <- ymd(paste(year, 12, 31))
+      end_date_i <- ymd(paste(years_requested[i], 12, 31))
     }
 
     year_i <- years_requested[i]

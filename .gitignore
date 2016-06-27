@@ -2,3 +2,5 @@
 .DS_Store
 *.nc
 temp*
+.user
+.Rproj.user

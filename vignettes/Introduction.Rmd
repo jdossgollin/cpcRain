@@ -2,7 +2,7 @@
 title: "Getting Started with cpcRain"
 author: "James Doss-Gollin"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: github_document#rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -52,8 +52,9 @@ Further, this package supports users who wish to extract data in two formats:
 ## Installation
 
 ```{r}
-# install.packages('devtools')
-#devtools::install_github(, dependencies = T)
+if(!require('devtools')) install.packages('devtools')
+devtools::install_github('jdossgollin/cpcRain', dependencies = T)
+library(cpcRain)
 ```
 
 
@@ -130,7 +131,7 @@ That way, we can access it efficiently whenever we want.
 for(year_i in 1997:2000){
   cpcYearToNCDF(
     year = year_i,
-    download_folder = getwd(),
+    download_folder = '~/Documents/Data/CPC/',
     empty_raw = TRUE,
     overwrite = FALSE
   )
@@ -140,3 +141,53 @@ for(year_i in 1997:2000){
 The `download_folder` parameter specifies where we want to save our `.nc` files after we create them.
 The `empty_raw` is set to TRUE, so the program will automatically delete the raw files downloaded from the CPC server after the `.nc` file is successfully created.
 Finally, the `overwrite` parameter is FALSE, so for a given year if the `.nc` file already exists then the function won't download the data and write the data.
+
+The process of downloading the files and creating the `.nc` files is slow, but once they're there, it's very easy to query them.
+You don't even need to do it from **R** -- any software package that can read NCDF _version 4_ files can read them.
+One way to read the files is with the excellent `ncdf4` package like:
+
+```{r}
+nc <- nc_open("~/Documents/Data/CPC/cpcRain_1997.nc")
+```
+
+You'll notice that the units on the `time` variable are a bit odd:
+
+```{r}
+nc$dim$time$vals[1:10]
+nc$dim$time$units
+```
+
+However, the advantage here is that the `lubridate` package's `as_date` function takes the origin to be 1970-01-01 by default, so you can call `as_date(nc$dim$time$vals)` without any trouble.
+
+Still, this is a needlessly complicated way to extract data from these files. 
+The much easier way is to use the `cpcReadNCDF` function, which can extract data from multiple years at once.
+Since the `.nc` files are inherently gridded, we can subset the data before reading it in:
+
+```{r, warning=TRUE}
+dt4 <- cpcReadNCDF(
+  start_date = ymd('1997-12-01'),
+  end_date = ymd('1999-02-11'),
+  lat_lims = c(35, 45),
+  lon_lims = c(100, 110),
+  download_folder = '~/Documents/Data/CPC/',
+  tidy = TRUE,
+  round_lonlat = TRUE
+)
+print(dt4)
+```
+
+The `start_date`, `end_date`, `lat_lims`, and `lon_lims` parameters are pretty straightforward and do exactly what you would imagine.
+The `download_folder` needs to be where the `.nc` files are stored -- this will be the same as the argument to the `cpcYearToNCDF` function.
+The `tidy` argument, like before, causes the function to return a `data.table` if TRUE and a 3D array if FALSE.
+The array can, again, be melted with `cpcMeltArray`.
+Finally, the `round_lonlat` argument is set to TRUE.
+Under the hood, the function automatically rounded the `lat_lims` and `lon_lims` slightly to give results that fit within the data.
+If `round_lonlat` is FALSE, then entering values that aren't in the data set will throw an error.
+
+
+
+# Improvements
+
+This is a brand new version of this package, so there are likely to be bugs.
+Please use the issues tracker at [https://github.com/jdossgollin/cpcRain/issues](https://github.com/jdossgollin/cpcRain/issues) to report issues, bugs, improvements, bad documentation, etc.
+Thanks in advance for your help!
