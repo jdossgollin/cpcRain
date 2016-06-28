@@ -115,7 +115,6 @@ devtools::<span class="kw">install_github</span>(<span class="st">'jdossgollin/c
 <h2>Accessing This Document</h2>
 <p>You can read this vignette at any time from your <strong>R</strong> session by calling:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">vignette</span>(<span class="st">'Introduction'</span>, <span class="dt">package =</span> <span class="st">'cpcRain'</span>)</code></pre></div>
-<pre><code>## Warning: vignette 'Introduction' not found</code></pre>
 </div>
 </div>
 <div id="example-1-sending-a-quick-data-query" class="section level1">
@@ -196,18 +195,18 @@ success &lt;-<span class="st"> </span><span class="kw">rbindlist</span>(success)
 <p>The <code>download_folder</code> parameter specifies where we want to save our <code>.nc</code> files after we create them. The <code>empty_raw</code> is set to TRUE, so the program will automatically delete the raw files downloaded from the CPC server after the <code>.nc</code> file is successfully created. Finally, the <code>overwrite</code> parameter is FALSE, so for a given year if the <code>.nc</code> file already exists then the function won’t download the data and write the data.</p>
 <p>We can check the success of the data download:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">success[<span class="kw">order</span>(success, date)]</code></pre></div>
-<pre><code>##              date success
-##     1: 1979-01-01    TRUE
-##     2: 1979-01-02    TRUE
-##     3: 1979-01-03    TRUE
-##     4: 1979-01-04    TRUE
-##     5: 1979-01-05    TRUE
-##    ---                   
-## 13876: 2016-12-27    TRUE
-## 13877: 2016-12-28    TRUE
-## 13878: 2016-12-29    TRUE
-## 13879: 2016-12-30    TRUE
-## 13880: 2016-12-31    TRUE</code></pre>
+<pre><code>##              date       success
+##     1: 1979-01-01 Not Attempted
+##     2: 1979-01-02 Not Attempted
+##     3: 1979-01-03 Not Attempted
+##     4: 1979-01-04 Not Attempted
+##     5: 1979-01-05 Not Attempted
+##    ---                         
+## 13876: 2016-12-27 Not Attempted
+## 13877: 2016-12-28 Not Attempted
+## 13878: 2016-12-29 Not Attempted
+## 13879: 2016-12-30 Not Attempted
+## 13880: 2016-12-31 Not Attempted</code></pre>
 <p>If it shows up as “Not Attempted”, it’s because the <code>.nc</code> file was already downloaded and <code>overwrite</code> was set to FALSE. The process of downloading the files and creating the <code>.nc</code> files is slow, but once they’re there, it’s very easy to query them. You don’t even need to do it from <strong>R</strong> – any software package that can read NCDF <em>version 4</em> files can read them. One way to read the files is with the excellent <code>ncdf4</code> package like:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nc &lt;-<span class="st"> </span><span class="kw">nc_open</span>(<span class="st">&quot;~/Documents/Data/CPC/cpcRain_1997.nc&quot;</span>)</code></pre></div>
 <p>You’ll notice that the units on the <code>time</code> variable are a bit odd:</p>

@@ -6,8 +6,8 @@ if(!require('devtools')) install.packages('devtools')
 devtools::install_github('jdossgollin/cpcRain', dependencies = T)
 library(cpcRain)
 
-## ---- message=FALSE------------------------------------------------------
-vignette('Introduction', package = 'cpcRain')
+## ---- eval=FALSE---------------------------------------------------------
+#  vignette('Introduction', package = 'cpcRain')
 
 ## ------------------------------------------------------------------------
 dt1 <- cpcQueryDateRange(start_date = ymd('1998-12-24'),

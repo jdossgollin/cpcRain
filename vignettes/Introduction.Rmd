@@ -63,7 +63,7 @@ library(cpcRain)
 
 You can read this vignette at any time from your **R** session by calling:
 
-```{r, message=FALSE}
+```{r, eval=FALSE}
 vignette('Introduction', package = 'cpcRain')
 ```
 
