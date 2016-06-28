@@ -16,6 +16,9 @@ cpcYearToNCDF(year, download_folder = getwd(), empty_raw = TRUE,
 
 \item{overwrite}{if TRUE, will proceed even if a `.nc` file for the specified year exists. If FALSE, will not run.}
 }
+\value{
+a data.table with columns date and success
+}
 \description{
 This function builds a NCDF (.nc) file from CPC data for a single year.
 To do this it downloads raw data from the CPC ftp server, reads it to an array, and writes that array to

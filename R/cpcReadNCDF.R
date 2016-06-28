@@ -17,7 +17,6 @@
 #'   is controlled by the \code{tidy} argument.
 #' @import magrittr
 #' @import data.table
-#' @import lubridate
 #' @export cpcReadNCDF
 cpcReadNCDF <- function(start_date, end_date, lat_lims, lon_lims, download_folder = getwd(), tidy = T, round_lonlat = TRUE){
   require(lubridate)

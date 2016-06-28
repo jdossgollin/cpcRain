@@ -33,21 +33,11 @@ cpcQueryDateRange <- function(start_date, end_date, tidy = TRUE){
   download_folder <- paste0(getwd(), '/tmp_cpc_folder')
   dir.create(download_folder)
 
-  # all dates
-  all_dates <- seq(start_date, end_date, 1)
-
-  # track which days were successfully downloaded
-  all_date_success <- rep(NA, length(all_dates))
-
   # Download the Raw Data
-  for(i in 1:length(all_dates)){
-
-    date_i <- all_dates[i]
-    all_date_success[i] <- cpcDownloadOneDay(date = date_i, download_folder = download_folder)
-
-  }
-
-  download_success_df <- data.frame(date = all_dates, success = all_date_success)
+  download_success_df <- cpcDownloadMultiDay(start_date = start_date,
+                      end_date = end_date,
+                      download_folder = download_folder,
+                      overwrite = T)
 
 
   # Read in the Data
@@ -59,6 +49,8 @@ cpcQueryDateRange <- function(start_date, end_date, tidy = TRUE){
   array <- array(dim = c(length(lons), length(lats), length(times)),
                  dimnames = list(lons, lats, times))
   # accessed by [lat, lon, time]
+
+  all_dates <- seq(start_date, end_date, 1)
 
   # For each day of the year: (1) download raw file (2) read raw file (3) save to memory
   for(i in 1:length(all_dates)){

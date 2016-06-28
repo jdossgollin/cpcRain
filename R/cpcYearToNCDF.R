@@ -11,6 +11,7 @@
 #' @import data.table
 #' @import magrittr
 #' @export cpcYearToNCDF
+#' @return a data.table with columns date and success
 
 cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, overwrite = F){
 
@@ -46,10 +47,16 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
     tmp_folder <- paste0(download_folder, 'temp_', year)
     dir.create(tmp_folder)
 
+    # load the data in
+    download_success_df <- cpcDownloadMultiDay(
+      start_date = ymd(paste(year, 1, 1)),
+      end_date = ymd(paste(year, 12, 31)),
+      download_folder = tmp_folder,
+      overwrite = F) %>% data.table()
+
     # loop through to fill the 3D array
     for(i in 1:length(times)){
       date_i <- as_date(times[i])
-      cpcDownloadOneDay(date = date_i, overwrite = FALSE, download_folder = tmp_folder)
       array[, , i] <- cpcReadRawOneDay(date = date_i, download_folder = tmp_folder)
     }
 
@@ -95,6 +102,15 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
 
     # delete the temp folder, if desired
     if(empty_raw) unlink(tmp_folder, recursive = T, force = T)
+
+  } else {
+
+    download_success_df <- data.table(date = seq(ymd(paste(year, 1, 1)), ymd(paste(year, 12, 31)), 1),
+                                      success = TRUE)
+
   }
+
+
+  return(download_success_df)
 
 }

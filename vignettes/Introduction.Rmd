@@ -55,8 +55,9 @@ Further, this package supports users who wish to extract data in two formats:
 
 ```{r}
 if(!require('devtools')) install.packages('devtools')
-devtools::install_github('jdossgollin/cpcRain', dependencies = T)
-library(cpcRain)
+#devtools::install_github('jdossgollin/cpcRain', dependencies = T)
+#library(cpcRain)
+devtools::load_all()
 ```
 
 
@@ -130,14 +131,18 @@ Since this will be a large data set, we're going to use the `cpcYearToNCDF` func
 That way, we can access it efficiently whenever we want.
 
 ```{r}
-for(year_i in 1997:2000){
-  cpcYearToNCDF(
+success <- vector('list', length(1979:2016))
+for(i in 1:length(1979:2016)){
+  year_i <- (1979:2016)[i]
+  success[[i]] <- cpcYearToNCDF(
     year = year_i,
     download_folder = '~/Documents/Data/CPC/',
     empty_raw = TRUE,
     overwrite = FALSE
   )
 }
+success <- rbindlist(success)
+print(success)
 ```
 
 The `download_folder` parameter specifies where we want to save our `.nc` files after we create them.
