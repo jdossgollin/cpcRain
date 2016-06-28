@@ -44,8 +44,9 @@ Issues with processing data:
 
 This package is designed to facilitate two use cases that are likely to cover most users of the CPC data:
 
-1. Users who wish to extract data from a single date or a short date range for one-time use. This is possible through the `cpcQueryDateRange` function.
-2. Users who wish to build a library of CPC data which they can query whenever is needed. This is accomplished by two functions. First the `cpcYearToNCDF` function downloads all CPC data (one year at a time) and stores the full year of data to a compressed NCDF (version 4) file. Next the `cpcReadNCDF` function allows users to easily extract data from those files. Extracting data from multiple years at once is permitted, as long as the data files for all years are present.
+1.  Users who wish to extract data from a single date or a short date range for one-time use. This is possible through the `cpcQueryDateRange` function.
+
+2.  Users who wish to build a library of CPC data which they can query whenever is needed. This is accomplished by two functions. First the `cpcYearToNCDF` function downloads all CPC data (one year at a time) and stores the full year of data to a compressed NCDF (version 4) file. Next the `cpcReadNCDF` function allows users to easily extract data from those files. Extracting data from multiple years at once is permitted, as long as the data files for all years are present.
 
 Further, this package supports users who wish to extract data in two formats:
 1. 3D arrays. The CPC data is gridded on a 0.5 degree grid of longitude and latitude; the third dimension is time.

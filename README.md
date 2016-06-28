@@ -1,3 +1,4 @@
+
 Getting Started with cpcRain
 ================
 James Doss-Gollin
@@ -6,6 +7,7 @@ James Doss-Gollin
 ``` r
 knitr::opts_chunk$set(warnings = F, message = F)
 ```
+
 
 Motivation
 ==========
@@ -30,6 +32,7 @@ Issues with processing data:
 -   file formats have changed over time, gzipped files prior to 2008 and binary files afterwards
 -   files are in binary format and there no software/code readily available to process/plot the data
 
+
 Package Philosophy
 ==================
 
@@ -38,7 +41,11 @@ This package is designed to facilitate two use cases that are likely to cover mo
 1.  Users who wish to extract data from a single date or a short date range for one-time use. This is possible through the `cpcQueryDateRange` function.
 2.  Users who wish to build a library of CPC data which they can query whenever is needed. This is accomplished by two functions. First the `cpcYearToNCDF` function downloads all CPC data (one year at a time) and stores the full year of data to a compressed NCDF (version 4) file. Next the `cpcReadNCDF` function allows users to easily extract data from those files. Extracting data from multiple years at once is permitted, as long as the data files for all years are present.
 
-Further, this package supports users who wish to extract data in two formats: 1. 3D arrays. The CPC data is gridded on a 0.5 degree grid of longitude and latitude; the third dimension is time. 2. Tidy data, via the `data.table` package. This format allows for easy manipulation of multiple variables, subsetting, grouping, and other fast operations on the data.
+Further, this package supports users who wish to extract data in two formats:
+
+ 1. 3D arrays. The CPC data is gridded on a 0.5 degree grid of longitude and latitude; the third dimension is time. 
+ 2. Tidy data, via the `data.table` package. This format allows for easy manipulation of multiple variables, subsetting, grouping, and other fast operations on the data.
+
 
 Installation
 ------------
@@ -49,6 +56,7 @@ devtools::install_github('jdossgollin/cpcRain', dependencies = T)
 library(cpcRain)
 ```
 
+
 Accessing This Document
 -----------------------
 
@@ -57,6 +65,7 @@ You can read this vignette at any time from your **R** session by calling:
 ``` r
 vignette('Introduction', package = 'cpcRain')
 ```
+
 
 Example 1: Sending a Quick Data Query
 =====================================
@@ -154,6 +163,7 @@ colMeans(dt3 == dt1$precip_data, na.rm = T)
 
 This shows that we get the same results either way.
 
+
 Example 2: Building a Data Library
 ==================================
 
@@ -232,7 +242,7 @@ dt4 <- cpcReadNCDF(
 
     ## Warning in cpcReadNCDF(start_date = ymd("1997-12-01"), end_date =
     ## ymd("1999-02-11"), : Adjusting lat_lims to nearest grid point
-
+    
     ## Warning in cpcReadNCDF(start_date = ymd("1997-12-01"), end_date =
     ## ymd("1999-02-11"), : Adjusting lon_lims to nearest grid point
 
@@ -254,6 +264,7 @@ print(dt4)
     ## 193158: 1999-02-11 109.75 44.75 0.00000000
 
 The `start_date`, `end_date`, `lat_lims`, and `lon_lims` parameters are pretty straightforward and do exactly what you would imagine. The `download_folder` needs to be where the `.nc` files are stored -- this will be the same as the argument to the `cpcYearToNCDF` function. The `tidy` argument, like before, causes the function to return a `data.table` if TRUE and a 3D array if FALSE. The array can, again, be melted with `cpcMeltArray`. Finally, the `round_lonlat` argument is set to TRUE. Under the hood, the function automatically rounded the `lat_lims` and `lon_lims` slightly to give results that fit within the data. If `round_lonlat` is FALSE, then entering values that aren't in the data set will throw an error.
+
 
 Improvements
 ============
