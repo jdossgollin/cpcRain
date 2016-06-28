@@ -1,7 +1,7 @@
 Getting Started with cpcRain
 ================
 James Doss-Gollin
-2016-06-27
+2016-06-28
 
 ``` r
 knitr::opts_chunk$set(warnings = F, message = F)
@@ -13,8 +13,8 @@ Motivation
 This package is an extension and overhaul of the original [cpcRain package](https://github.com/dlebauer/cpcRain) by [dlebauer](https://github.com/dlebauer). Many of the functions were written by Gopi Goteti in their first form and I have just updated and extended them. That package presented R code to download and analyze global precipitation data from the Climate Prediction Center (CPC)
 
 -   Spatial Coverage: Global (mostly land areas)
--   Temporal Coverage: 1979/1/1 - present
--   Spatial Resolution: 0.5 degrees lat-lon (~ 50 x 50 km)
+-   Temporal Coverage: 1979 - present
+-   Spatial Resolution: 0.5 degrees lat-lon
 -   Temporal Resolution: daily
 
 Hydrological and climatological studies sometimes require rainfall data over the entire world for long periods of time. The Climate Prediction Center's [(CPC)](http://www.cpc.ncep.noaa.gov/) daily data, from 1979 to present, at a spatial resolution of 0.5 degrees lat-lon (~ 50 km at the equator) is a good resource. This data is available at CPC's ftp site (<ftp://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_GLB/>). However, there are a number of issues:
@@ -47,6 +47,15 @@ Installation
 if(!require('devtools')) install.packages('devtools')
 devtools::install_github('jdossgollin/cpcRain', dependencies = T)
 library(cpcRain)
+```
+
+Accessing This Document
+-----------------------
+
+You can read this vignette at any time from your **R** session by calling:
+
+``` r
+vignette('Introduction', package = 'cpcRain')
 ```
 
 Example 1: Sending a Quick Data Query
@@ -151,19 +160,41 @@ Example 2: Building a Data Library
 Now let's imagine that we're not content just querying data from a few weeks, but we want to look at all rainfall over the Northeast United States from 1997-2000. Since this will be a large data set, we're going to use the `cpcYearToNCDF` function to build a library of `.nc` files, one for each year, to store our data. That way, we can access it efficiently whenever we want.
 
 ``` r
-for(year_i in 1997:2000){
-  cpcYearToNCDF(
-    year = year_i,
+download_years <- 1979:2016
+success <- vector('list', length(download_years))
+for(i in 1:length(download_years)){
+  success[[i]] <- cpcYearToNCDF(
+    year = download_years[i],
     download_folder = '~/Documents/Data/CPC/',
     empty_raw = TRUE,
     overwrite = FALSE
   )
 }
+success <- rbindlist(success)
 ```
 
 The `download_folder` parameter specifies where we want to save our `.nc` files after we create them. The `empty_raw` is set to TRUE, so the program will automatically delete the raw files downloaded from the CPC server after the `.nc` file is successfully created. Finally, the `overwrite` parameter is FALSE, so for a given year if the `.nc` file already exists then the function won't download the data and write the data.
 
-The process of downloading the files and creating the `.nc` files is slow, but once they're there, it's very easy to query them. You don't even need to do it from **R** -- any software package that can read NCDF *version 4* files can read them. One way to read the files is with the excellent `ncdf4` package like:
+We can check the success of the data download:
+
+``` r
+success[order(success, date)]
+```
+
+    ##              date       success
+    ##     1: 1979-01-01 Not Attempted
+    ##     2: 1979-01-02 Not Attempted
+    ##     3: 1979-01-03 Not Attempted
+    ##     4: 1979-01-04 Not Attempted
+    ##     5: 1979-01-05 Not Attempted
+    ##    ---                         
+    ## 13876: 2016-12-27 Not Attempted
+    ## 13877: 2016-12-28 Not Attempted
+    ## 13878: 2016-12-29 Not Attempted
+    ## 13879: 2016-12-30 Not Attempted
+    ## 13880: 2016-12-31 Not Attempted
+
+If it shows up as "Not Attempted", it's because the `.nc` file was already downloaded and `overwrite` was set to FALSE. The process of downloading the files and creating the `.nc` files is slow, but once they're there, it's very easy to query them. You don't even need to do it from **R** -- any software package that can read NCDF *version 4* files can read them. One way to read the files is with the excellent `ncdf4` package like:
 
 ``` r
 nc <- nc_open("~/Documents/Data/CPC/cpcRain_1997.nc")
@@ -185,7 +216,7 @@ nc$dim$time$units
 
 However, the advantage here is that the `lubridate` package's `as_date` function takes the origin to be 1970-01-01 by default, so you can call `as_date(nc$dim$time$vals)` without any trouble.
 
-Still, this is a needlessly complicated way to extract data from these files. The much easier way is to use the `cpcReadNCDF` function, which can extract data from multiple years at once. Since the `.nc` files are inherently gridded, we can subset the data before reading it in:
+Still, this is a needlessly complicated way to extract data from these files. You don't even have to call . The much easier way is to use the `cpcReadNCDF` function, which can extract data from multiple years at once. Since the `.nc` files are gridded by default, we can subset the data before reading it in:
 
 ``` r
 dt4 <- cpcReadNCDF(
