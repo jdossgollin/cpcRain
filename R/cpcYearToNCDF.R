@@ -106,7 +106,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
   } else {
 
     download_success_df <- data.table(date = seq(ymd(paste(year, 1, 1)), ymd(paste(year, 12, 31)), 1),
-                                      success = TRUE)
+                                      success = "Not Attempted")
 
   }
 
