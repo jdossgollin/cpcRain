@@ -18,7 +18,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
   require(lubridate)
 
   # check for valid year
-  if(!(lubridate::year %in% 1979:lubridate::year(Sys.Date()))) stop('invalid year')
+  if(!(lubridate::year %in% 1979:(lubridate::year(Sys.Date())))) stop('invalid year')
 
   # check download_folder validity
   if(substr(download_folder, nchar(download_folder), nchar(download_folder)) != '/') download_folder <- paste0(download_folder, '/')
