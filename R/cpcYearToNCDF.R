@@ -15,8 +15,10 @@
 
 cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, overwrite = F){
 
+  require(lubridate)
+
   # check for valid year
-  if(!(year %in% 1979:year(Sys.Date()))) stop('invalid year')
+  if(!(lubridate::year %in% 1979:lubridate::year(Sys.Date()))) stop('invalid year')
 
   # check download_folder validity
   if(substr(download_folder, nchar(download_folder), nchar(download_folder)) != '/') download_folder <- paste0(download_folder, '/')
@@ -37,7 +39,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
     # first initialize array
     lons <- param$cpcLonVec
     lats <- param$cpcLatVec
-    times <- as.numeric(seq(ymd(paste(year, 1, 1)), ymd(paste(year, 12, 31)), 1))
+    times <- as.numeric(seq(lubridate::ymd(paste(year, 1, 1)), lubridate::ymd(paste(year, 12, 31)), 1))
     array <- array(dim = c(length(lons), length(lats), length(times)),
                    dimnames = list(lons, lats, times))
     # [lat, lon, time]
@@ -49,8 +51,8 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
 
     # load the data in
     download_success_df <- cpcDownloadMultiDay(
-      start_date = ymd(paste(year, 1, 1)),
-      end_date = ymd(paste(year, 12, 31)),
+      start_date = lubridate::ymd(paste(year, 1, 1)),
+      end_date = lubridate::ymd(paste(year, 12, 31)),
       download_folder = tmp_folder,
       overwrite = F) %>% data.table()
 
@@ -61,12 +63,12 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
     }
 
     # define dimensions of the data array for ncdf saving
-    nc_lats <- ncdim_def("lat", "degrees N", lats)
-    nc_lons <- ncdim_def("lon", "degrees E", lons)
-    nc_times <- ncdim_def("time", "days since 1970-01-01", as.numeric(times), unlim = TRUE)
+    nc_lats <- ncdf4::ncdim_def("lat", "degrees N", lats)
+    nc_lons <- ncdf4::ncdim_def("lon", "degrees E", lons)
+    nc_times <- ncdf4::ncdim_def("time", "days since 1970-01-01", as.numeric(times), unlim = TRUE)
 
     # define a variable for ncdf
-    precip_ncvar <- ncvar_def(
+    precip_ncvar <- ncdf4::ncvar_def(
       name = 'precip',
       units = 'mm',
       dim = list(nc_lons, nc_lats, nc_times),
@@ -83,12 +85,12 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
     # ----------------- write to NCDF File --------
 
     # create file connection
-    nc <- nc_create(filename = nc_filename, vars = precip_ncvar)
+    nc <- ncdf4::nc_create(filename = nc_filename, vars = precip_ncvar)
 
     # loop through, adding 2D slices, because time is an unlimited dimension
     for( i in 1:length(times)) {
 
-      ncvar_put(nc,
+      ncdf4::ncvar_put(nc,
                 varid = precip_ncvar,
                 vals = array[, , i],
                 start = c(1, 1, i),
@@ -98,7 +100,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
     }
 
     # close file connection
-    nc_close(nc)
+    ncdf4::nc_close(nc)
 
     # delete the temp folder, if desired
     if(empty_raw) unlink(tmp_folder, recursive = T, force = T)
