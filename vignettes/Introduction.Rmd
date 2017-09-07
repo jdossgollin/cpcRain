@@ -144,7 +144,6 @@ success <- vector('list', length(download_years))
 for(i in 1:length(download_years)){
   success[[i]] <- cpcYearToNCDF(
     year = download_years[i],
-    download_folder = '~/Documents/Data/CPC/',
     empty_raw = TRUE,
     overwrite = FALSE
   )
@@ -191,7 +190,6 @@ dt4 <- cpcReadNCDF(
   end_date = ymd('1999-02-11'),
   lat_lims = c(35, 45),
   lon_lims = c(100, 110),
-  download_folder = '~/Documents/Data/CPC/',
   tidy = TRUE,
   round_lonlat = TRUE
 )
