@@ -30,7 +30,7 @@ Issues with obtaining data:
 Issues with processing data:
 
 -   file formats have changed over time, gzipped files prior to 2008 and binary files afterwards
--   files are in binary format and there no software/code readily available to process/plot the data
+-   files are in binary format and there no software/code readily available to process/plot the data.
 
 
 Package Philosophy
