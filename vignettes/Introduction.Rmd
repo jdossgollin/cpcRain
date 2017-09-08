@@ -76,9 +76,10 @@ Since we're just interested in a short date range, we don't need to download yea
 We do this with the `cpcQueryDateRange` function:
 
 ```{r}
-dt1 <- cpcQueryDateRange(start_date = ymd('1998-12-24'),
-                         end_date = ymd('1999-01-04'),
-                         tidy = T)
+dt1 <- cpcQueryDateRange(
+  start_date = ymd('1998-12-24'),
+  end_date = ymd('1999-01-04'),
+  tidy = T)
 ```
 
 We'll look into the `tidy` argument in a moment.
@@ -103,9 +104,10 @@ We can also _cast_ our data to create a matrix of dates versus grid cells using 
 We can also set `tidy = FALSE` to get an array of the data:
 
 ```{r}
-dt2 <- cpcQueryDateRange(start_date = ymd('1998-12-24'),
-                         end_date = ymd('1999-01-04'),
-                         tidy = F)
+dt2 <- cpcQueryDateRange(
+  start_date = ymd('1998-12-24'),
+  end_date = ymd('1999-01-04'),
+  tidy = F)
 ```
 
 Be aware that every time you use the `cpcQueryDateRange` function, data is re-downloaded from the server.
@@ -138,8 +140,10 @@ Now let's imagine that we're not content just querying data from a few weeks, bu
 Since this will be a large data set, we're going to use the `cpcYearToNCDF` function to build a library of `.nc` files, one for each year, to store our data.
 That way, we can access it efficiently whenever we want.
 
-```{r}
-download_years <- 1979:2016
+**Because this takes a very long time, the following code chunks are not run!**
+
+```{r, eval = FALSE}
+download_years <- 1979:1980
 success <- vector('list', length(download_years))
 for(i in 1:length(download_years)){
   success[[i]] <- cpcYearToNCDF(
@@ -157,44 +161,26 @@ Finally, the `overwrite` parameter is FALSE, so for a given year if the `.nc` fi
 
 We can check the success of the data download:
 
-```{r}
+```{r, eval=FALSE}
 success[order(success, date)]
 ```
 
 If it shows up as "Not Attempted", it's because the `.nc` file was already downloaded and `overwrite` was set to FALSE.
 The process of downloading the files and creating the `.nc` files is slow, but once they're there, it's very easy to query them.
 You don't even need to do it from **R** -- any software package that can read NCDF _version 4_ files can read them.
-One way to read the files is with the excellent `ncdf4` package like:
+One way to read the files is with the excellent `ncdf4` package.
+In that case, you'll notice that the units on the `time` variable are a bit odd:
 
-```{r}
-nc <- nc_open("~/Documents/Data/CPC/cpcRain_1997.nc")
-```
-
-You'll notice that the units on the `time` variable are a bit odd:
-
-```{r}
+```{r, eval=FALSE}
 nc$dim$time$vals[1:10]
 nc$dim$time$units
 ```
 
-However, the advantage here is that the `lubridate` package's `as_date` function takes the origin to be 1970-01-01 by default, so you can call `as_date(nc$dim$time$vals)` without any trouble.
+However, the advantage here is that the `lubridate` package's `as_date` function takes the origin to be 1970-01-01 by default, so you can call `lubridate::as_date(nc$dim$time$vals)` without any trouble.
 
-Still, this is a needlessly complicated way to extract data from these files. You don't even have to call `r nc_close(nc)`.
+Still, this is a needlessly complicated way to extract data from these files.
 The much easier way is to use the `cpcReadNCDF` function, which can extract data from multiple years at once.
 Since the `.nc` files are gridded by default, we can subset the data before reading it in:
-
-
-```{r, warning=TRUE}
-dt4 <- cpcReadNCDF(
-  start_date = ymd('1997-12-01'),
-  end_date = ymd('1999-02-11'),
-  lat_lims = c(35, 45),
-  lon_lims = c(100, 110),
-  tidy = TRUE,
-  round_lonlat = TRUE
-)
-print(dt4)
-```
 
 The `start_date`, `end_date`, `lat_lims`, and `lon_lims` parameters are pretty straightforward and do exactly what you would imagine.
 The `download_folder` needs to be where the `.nc` files are stored -- this will be the same as the argument to the `cpcYearToNCDF` function.
@@ -203,7 +189,6 @@ The array can, again, be melted with `cpcMeltArray`.
 Finally, the `round_lonlat` argument is set to TRUE.
 Under the hood, the function automatically rounded the `lat_lims` and `lon_lims` slightly to give results that fit within the data.
 If `round_lonlat` is FALSE, then entering values that aren't in the data set will throw an error.
-
 
 
 # Improvements

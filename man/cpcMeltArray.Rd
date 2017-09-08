@@ -18,4 +18,3 @@ returns a data.table with columns date, lon, lat, and prcp_mm.
 This function takes in an array with indices [lon, lat, time] and with dimnames giving the values and converts
 the array to a data.table.
 }
-

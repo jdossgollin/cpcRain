@@ -14,4 +14,3 @@ they can be saved in a single location.
 \author{
 James Doss-Gollin
 }
-

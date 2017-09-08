@@ -1,10 +1,9 @@
 Package: cpcRain
 Title: Manage data from the CPC Unified Gauge-Based Analysis of Global Daily Precipitation data set
 Version: 2.0
-Author: Gopi Goteti (Version 1.0) and James Doss-Gollin (Version 2.0+)
 Authors@R: c(
-    person("Gopi", "Goteti", role = "auth"),
-    person("James", "Doss-Gollin", role = c("auth", "cre"), email = "jwd2136@columbia.edu"))
+    person("Gopi", "Goteti", role = "aut"),
+    person("James", "Doss-Gollin", role = c("aut", "cre"), email = "jwd2136@columbia.edu"))
 Description: Data from the CPC server is excellent, but poorly organized and difficult to access. 
   This package solves that by providing two ways to access this data. The first is through short 
   queries which are saved to memory; the second is to download data (a year at a time) and put it 
@@ -16,7 +15,7 @@ Depends:
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Imports:
     ncdf4,
     lubridate,

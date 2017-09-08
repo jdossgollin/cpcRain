@@ -2,6 +2,7 @@
 % Please edit documentation in R/FnGetFileNameQuirks.R, R/cpcGetFileNameQuirks.R
 \name{cpcGetFileNameQuirks}
 \alias{cpcGetFileNameQuirks}
+\alias{cpcGetFileNameQuirks}
 \title{Identify filename quirks for each year}
 \usage{
 cpcGetFileNameQuirks(yr)
@@ -43,4 +44,3 @@ Gopi Goteti
 
 James Doss-Gollin
 }
-

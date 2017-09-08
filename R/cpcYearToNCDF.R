@@ -16,6 +16,7 @@
 cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, overwrite = F){
 
   require(lubridate)
+  require(ncdf4)
 
   # check for valid year
   if(!(year %in% 1979:(lubridate::year(Sys.Date())))) stop('invalid year')
@@ -58,7 +59,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
 
     # loop through to fill the 3D array
     for(i in 1:length(times)){
-      date_i <- as_date(times[i])
+      date_i <- lubridate::as_date(times[i])
       array[, , i] <- cpcReadRawOneDay(date = date_i, download_folder = tmp_folder)
     }
 
@@ -79,7 +80,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
     )
 
     # all days to download
-    times_ymd <- as_date(times)
+    times_ymd <- lubridate::as_date(times)
 
 
     # ----------------- write to NCDF File --------
@@ -107,7 +108,7 @@ cpcYearToNCDF <- function(year, download_folder = getwd(), empty_raw = TRUE, ove
 
   } else {
 
-    download_success_df <- data.table(date = seq(ymd(paste(year, 1, 1)), ymd(paste(year, 12, 31)), 1),
+    download_success_df <- data.table(date = seq(lubridate::ymd(paste(year, 1, 1)), lubridate::ymd(paste(year, 12, 31)), 1),
                                       success = "Not Attempted")
 
   }

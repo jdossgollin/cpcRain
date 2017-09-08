@@ -28,4 +28,3 @@ For each date in the date range, it downloads the raw files, reads them to an ar
 and deletes the raw files.
 By default it returns a tidy data.table, but it can also return a 3D array.
 }
-

@@ -34,4 +34,3 @@ about syntax. In order for these queries to work, you need to first download the
 for the years you wish to download. This function allows you to read those files, using the same \code{download_folder} parameter.
 It can return either tidy data or a 3D array.
 }
-

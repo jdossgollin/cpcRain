@@ -27,4 +27,3 @@ This function is not intended to be called directly.
 It downloads a date range from the CPC FTP server by using cpcDownloadOneDay inside of a try statement.
 Any dates that are not successfully downloaded are tried a second time.
 }
-

@@ -25,4 +25,3 @@ To do this it downloads raw data from the CPC ftp server, reads it to an array, 
 a NCDF file.
 It will always build the file for all data for that particular year.
 }
-
