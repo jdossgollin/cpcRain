@@ -1,5 +1,6 @@
 
 Getting Started with cpcRain
+[![Build Status](https://travis-ci.org/jdossgollin/cpcRain.svg?branch=master)](https://travis-ci.org/jdossgollin/cpcRain)
 ================
 James Doss-Gollin
 2016-06-28
