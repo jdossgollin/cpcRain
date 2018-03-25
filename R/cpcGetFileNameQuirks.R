@@ -31,7 +31,7 @@ cpcGetFileNameQuirks <- function(yr) {
     urlTag  <- "RT/"
     fileTag <- ".RT.gz"
 
-  } else if (yr %in% seq(2009, 2016)) {
+  } else if (yr %in% seq(2009, 2018)) {
 
     urlTag  <- "RT/"
     fileTag <- ".RT"
